@@ -7,15 +7,20 @@ import { useAuth } from '../hooks/useAuth'
 const Login = () => {
 
   const {loading,handleLogin} = useAuth()
+  const navigate = useNavigate()
   
-
+  
   const [email,setEmail] = useState("")
   const [password,setPassword] = useState("")
   //Handling the reload of a button 
   const handleSubmit = async (e)=>{
-    e.preventDefault()
-    handleLogin({email,password})
-  }
+    
+      e.preventDefault()
+    // handle login function poor handle krleta hai ki loading state ko true krna ,api call krna phere api call krne k baad ham user k data frontend k data k store krne wale hai
+    
+      await handleLogin({email,password})
+      navigate('/')
+      }   
   if(loading){
     return (<main><h1>Loading........</h1></main>)
   }

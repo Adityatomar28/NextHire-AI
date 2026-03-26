@@ -12,10 +12,18 @@ export const useAuth = () => {
     const handleLogin = async({email,password}) => {
         setLoading(true) //loading dekhane k kaam ui k hai
         //Data k andr user bhi aayega in backend as we are returning the user during api call
-        const data = await login({email,password})
-        setUser(data.user)
-        setLoading(false)
-
+       try {
+         const data = await login({email,password}) //api call kr rhe hai yha
+         console.log("Login data:", data)
+         setUser(data.data.user)
+         return { success: true }
+       } catch (err) {
+        console.log(err)
+        return { success: false }
+       }finally{
+         setLoading(false)
+       }
+       
     }
     const handleRegister = async ({username,email,password}) => {
         setLoading(true)
@@ -29,4 +37,7 @@ export const useAuth = () => {
         setUser(null)
         setLoading(false)
     }
+    return {user,loading,handleRegister,handleLogin,handleLogout}
 }
+
+//using this hook in pages ->login.jsx
