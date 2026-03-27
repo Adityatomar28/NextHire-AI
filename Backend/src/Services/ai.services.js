@@ -1,15 +1,13 @@
-const {GoogleGenAI} = require("@google/genai")
-const {z} = require("zod")
-const {zodToJsonSchema} = require("zod-to-json-schema")
-
-
+const { GoogleGenAI } = require("@google/genai")
+const { z } = require("zod")
+const { zodToJsonSchema } = require("zod-to-json-schema")
 
 
 const ai = new GoogleGenAI({
-    apiKey:process.env.GOOGLE_GENAI_API_KEY
+    apiKey: process.env.GOOGLE_GENAI_API_KEY
 })
 
-// To check model whether it is working fine or not
+
 const interviewReportSchema = z.object({
     matchScore: z.number().describe("A score between 0 and 100 indicating how well the candidate's profile matches the job describe"),
     technicalQuestions: z.array(z.object({
@@ -34,7 +32,6 @@ const interviewReportSchema = z.object({
     title: z.string().describe("The title of the job for which the interview report is generated"),
 })
 
-
 async function generateInterviewReport({ resume, selfDescription, jobDescription }) {
 
 
@@ -45,7 +42,7 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
 `
 
     const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-3-flash-preview",
         contents: prompt,
         config: {
             responseMimeType: "application/json",
@@ -57,7 +54,4 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
 
 
 }
-
-
-
 module.exports = generateInterviewReport
