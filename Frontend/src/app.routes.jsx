@@ -1,30 +1,26 @@
 import { createBrowserRouter } from "react-router";
-import Login from "./Features/auth/pages/Login";
-import Register from "./Features/auth/pages/Register";
-import Protected from "./Features/auth/components/Protected";
-
+import Login from "./features/auth/pages/Login";
+import Register from "./features/auth/pages/Register";
+import Protected from "./features/auth/components/Protected";
+import Home from "./features/interview/pages/Home";
+import Interview from "./features/interview/pages/Interview";
 
 
 export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Login />   // 👈 default page
-  },
-  {
-    path: "/login",
-    element: <Login />
-  },
-  {
-    path: "/register",
-    element: <Register />
-  },{
-    path:"/",
-    element:<Protected><h1>Home page</h1></Protected>
-  }
+    {
+        path: "/login",
+        element: <Login />
+    },
+    {
+        path: "/register",
+        element: <Register />
+    },
+    {
+        path: "/",
+        element: <Protected><Home /></Protected>
+    },
+    {
+        path:"/interview/:interviewId",
+        element: <Protected><Interview /></Protected>
+    }
 ])
-
-
-
-
-//kis route p konsa element dekhana hai
-        //abh iss route ko use krna hai toh then goto App.jsx
