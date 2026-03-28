@@ -1,44 +1,36 @@
 const express = require('express')
 const authControllers = require("../controllers/auth.controllers")
-const authMiddleware =  require("../middleware/auth.middleware")
+const authMiddleware = require("../middleware/auth.middleware")
 
 const authRouter = express.Router()
 
 /**
- * @route POST/api/auth/register
+ * @route POST /api/auth/register
  * @description Register a new user 
  * @access Public
  */
-
-
-authRouter.post("/register",authControllers.registerUserControllers)
+authRouter.post("/register", authControllers.registerUserController)
 
 /**
- * @route POST/api/auth/login
- * @description login user with email and password
+ * @route POST /api/auth/login
+ * @description Login user with email and password
  * @access Public
  */
-authRouter.post("/login",authControllers.loginUserControllers)
+authRouter.post("/login", authControllers.loginUserController)
+
 
 /**
- * @route GET/api/auth/logout
- * @description clear cookie from user cookie and add token in blacklist
+ * @route GET /api/auth/logout
+ * @description Logout user and clear cookie
  * @access Public
  */
-
-authRouter.get("/logout",authControllers.logoutUserControllers)
-
+authRouter.get("/logout", authControllers.logoutUserController)
 
 /**
- * @route GET/api/auth/get-me
-* @descriptions get the current logged in user details
-* @access private
-*/
-// Here middle-ware is also coming that let us know which user has requested 
-authRouter.get("/get-me",authMiddleware.authUser,authControllers.getMeController)
+ * @route GET /api/auth/get-me
+ * @description Get current logged-in user details
+ * @access Private
+ */
+authRouter.get("/get-me", authMiddleware.authUser, authControllers.getMeController)
 
-
-
-//The router is then exported and used in app.js with a base path
 module.exports = authRouter
-
