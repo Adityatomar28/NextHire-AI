@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import '../style/interview.scss'
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate, useParams } from 'react-router'
+import LoadingScreen from '../components/LoadingScreen'
 
 
 
@@ -63,24 +64,37 @@ const Interview = () => {
     const { interviewId } = useParams()
 
     useEffect(() => {
-        if (interviewId) {
-            getReportById(interviewId)
+        if (!interviewId) return
+
+        // Ensure the param is a valid MongoDB ObjectId (24 hex chars)
+        const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(interviewId)
+        if (!isValidObjectId) {
+            console.warn(`Invalid interview id: ${interviewId}`)
+            return
         }
+
+        getReportById(interviewId)
     }, [ interviewId ])
 
+    if (loading) {
+        return <LoadingScreen message="Loading your interview plan..." />
+    }
 
-
-    if (loading || !report) {
+    if (!report) {
         return (
-            <main className='loading-screen'>
-                <h1>Loading your interview plan...</h1>
+            <main className='interview-error'>
+                <div className='interview-error__box'>
+                    <h2>Interview plan not found</h2>
+                    <p>The interview ID in this URL is invalid or no report exists.</p>
+                    <button className='button primary-button' onClick={() => window.location.href = '/'}>Go to Home</button>
+                </div>
             </main>
         )
     }
 
     const scoreColor =
-        report.matchScore >= 80 ? 'score--high' :
-            report.matchScore >= 60 ? 'score--mid' : 'score--low'
+        (report?.matchScore || 0) >= 80 ? 'score--high' :
+            (report?.matchScore || 0) >= 60 ? 'score--mid' : 'score--low'
 
 
     return (
@@ -118,10 +132,10 @@ const Interview = () => {
                         <section>
                             <div className='content-header'>
                                 <h2>Technical Questions</h2>
-                                <span className='content-header__count'>{report.technicalQuestions.length} questions</span>
+                                <span className='content-header__count'>{report?.technicalQuestions?.length || 0} questions</span>
                             </div>
                             <div className='q-list'>
-                                {report.technicalQuestions.map((q, i) => (
+                                {report?.technicalQuestions?.map((q, i) => (
                                     <QuestionCard key={i} item={q} index={i} />
                                 ))}
                             </div>
@@ -132,10 +146,10 @@ const Interview = () => {
                         <section>
                             <div className='content-header'>
                                 <h2>Behavioral Questions</h2>
-                                <span className='content-header__count'>{report.behavioralQuestions.length} questions</span>
+                                <span className='content-header__count'>{report?.behavioralQuestions?.length || 0} questions</span>
                             </div>
                             <div className='q-list'>
-                                {report.behavioralQuestions.map((q, i) => (
+                                {report?.behavioralQuestions?.map((q, i) => (
                                     <QuestionCard key={i} item={q} index={i} />
                                 ))}
                             </div>
@@ -146,10 +160,10 @@ const Interview = () => {
                         <section>
                             <div className='content-header'>
                                 <h2>Preparation Road Map</h2>
-                                <span className='content-header__count'>{report.preparationPlan.length}-day plan</span>
+                                <span className='content-header__count'>{report?.preparationPlan?.length || 0}-day plan</span>
                             </div>
                             <div className='roadmap-list'>
-                                {report.preparationPlan.map((day) => (
+                                {report?.preparationPlan?.map((day) => (
                                     <RoadMapDay key={day.day} day={day} />
                                 ))}
                             </div>
@@ -166,7 +180,7 @@ const Interview = () => {
                     <div className='match-score'>
                         <p className='match-score__label'>Match Score</p>
                         <div className={`match-score__ring ${scoreColor}`}>
-                            <span className='match-score__value'>{report.matchScore}</span>
+                            <span className='match-score__value'>{report?.matchScore || 0}</span>
                             <span className='match-score__pct'>%</span>
                         </div>
                         <p className='match-score__sub'>Strong match for this role</p>
@@ -178,7 +192,7 @@ const Interview = () => {
                     <div className='skill-gaps'>
                         <p className='skill-gaps__label'>Skill Gaps</p>
                         <div className='skill-gaps__list'>
-                            {report.skillGaps.map((gap, i) => (
+                            {report?.skillGaps?.map((gap, i) => (
                                 <span key={i} className={`skill-tag skill-tag--${gap.severity}`}>
                                     {gap.skill}
                                 </span>

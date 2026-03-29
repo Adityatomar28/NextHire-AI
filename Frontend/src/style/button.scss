@@ -1,20 +1,60 @@
-// In this style related to button idhr hi jaa rha hoga
+// ── Button Styles ────────────────────────────────────────────────
 
-.button{
-    border:none;
-    outline:none;
-    padding-inline:1.5 rem;
-    padding-block: 0.75rem;
-    border-radius: 1rem;
+.button {
+    border: none;
+    outline: none;
+    padding: 0.85rem 1.8rem;
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s ease-in-out;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+    position: relative;
+    overflow: hidden;
 
-    &.primary-button{
-        background-color: #f63b79;
+    &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    &:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    &.primary-button {
+        background: linear-gradient(135deg, #ff2d78 0%, #ff6b9d 100%);
         color: white;
-    }
-    &:active{
-        transform: scale(0.9);
+        box-shadow: 0 8px 24px rgba(255, 45, 120, 0.3);
+
+        &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(255, 45, 120, 0.4);
+        }
+
+        &:active {
+            transform: translateY(-1px) scale(0.98);
+            box-shadow: 0 4px 12px rgba(255, 45, 120, 0.3);
+        }
     }
 
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    &:focus {
+        outline: 2px solid rgba(255, 45, 120, 0.5);
+        outline-offset: 2px;
+    }
 }

@@ -2,20 +2,38 @@ import React, { useState, useRef } from 'react'
 import "../style/home.scss"
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate } from 'react-router'
+import { useAuth } from '../../auth/hooks/useAuth'
 
 const Home = () => {
 
     const { loading, generateReport,reports } = useInterview()
+    const { handleLogout } = useAuth()
     const [ jobDescription, setJobDescription ] = useState("")
     const [ selfDescription, setSelfDescription ] = useState("")
+    const [ error, setError ] = useState("")
     const resumeInputRef = useRef()
 
     const navigate = useNavigate()
 
+    const handleLogoutClick = async () => {
+        await handleLogout()
+        navigate('/')
+    }
+
     const handleGenerateReport = async () => {
-        const resumeFile = resumeInputRef.current.files[ 0 ]
-        const data = await generateReport({ jobDescription, selfDescription, resumeFile })
-        navigate(`/interview/${data._id}`)
+        setError("")
+        try {
+            const resumeFile = resumeInputRef.current.files[ 0 ]
+            const data = await generateReport({ jobDescription, selfDescription, resumeFile })
+            if (!data || !data._id) {
+                setError("Failed to generate report. Please try again.")
+                return
+            }
+            navigate(`/interview/report/${data._id}`)
+        } catch (err) {
+            setError(err?.response?.data?.message || "Failed to generate interview strategy. Please try again.")
+            console.error(err)
+        }
     }
 
     if (loading) {
@@ -34,6 +52,21 @@ const Home = () => {
                 <h1>Create Your Custom <span className='highlight'>Interview Plan</span></h1>
                 <p>Let our AI analyze the job requirements and your unique profile to build a winning strategy.</p>
             </header>
+
+            <button onClick={handleLogoutClick} className='logout-btn'>Logout</button>
+
+            {error && (
+                <div style={{
+                    background: '#fee2e2',
+                    border: '1px solid #fca5a5',
+                    color: '#991b1b',
+                    padding: '1rem',
+                    borderRadius: '0.5rem',
+                    marginBottom: '1.5rem'
+                }}>
+                    {error}
+                </div>
+            )}
 
             {/* Main Card */}
             <div className='interview-card'>
@@ -128,7 +161,7 @@ const Home = () => {
                     <h2>My Recent Interview Plans</h2>
                     <ul className='reports-list'>
                         {reports.map(report => (
-                            <li key={report._id} className='report-item' onClick={() => navigate(`/interview/${report._id}`)}>
+                            <li key={report._id} className='report-item' onClick={() => navigate(`/interview/report/${report._id}`)}>
                                 <h3>{report.title || 'Untitled Position'}</h3>
                                 <p className='report-meta'>Generated on {new Date(report.createdAt).toLocaleDateString()}</p>
                                 <p className={`match-score ${report.matchScore >= 80 ? 'score--high' : report.matchScore >= 60 ? 'score--mid' : 'score--low'}`}>Match Score: {report.matchScore}%</p>
@@ -149,3 +182,4 @@ const Home = () => {
 }
 
 export default Home
+

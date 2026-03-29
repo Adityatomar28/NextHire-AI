@@ -1,82 +1,84 @@
 import axios from "axios"
-//Total we have 4 api from backend here we interacting with the backend
 
-//To stop repetative code  replacing axios with api
+
 const api = axios.create({
-    baseURL:"http://localhost:3000",
-    withCredentials:true
+    baseURL: "http://localhost:3000",
+    withCredentials: true
 })
 
+export async function register({ username, email, password }) {
 
-
-export async function register({username,email,password}){
     try {
-        const response = await api.post('/api/auth/register',{
-            username,email,password
+        const response = await api.post('/api/auth/register', {
+            username, email, password
         })
-        return response.data
-    } catch (err) {
-        console.log(err)
-    }
-}
 
+        return response.data
+
+    } catch (err) {
+
+        console.log(err)
+
+    }
+
+}
 
 export async function login({ email, password }) {
-  try {
-    const response = await api.post("/api/auth/login", {
-      email,
-      password,
-    });
 
-    return { success: true, data: response.data };
-
-  } catch (err) {
-    console.log(err);
-
-    return {
-      success: false,
-      error: err.response?.data || "Login failed",
-    };
-  }
-}
-
-
-export async function logout(){
     try {
-        const response = await api.get("/api/auth/logout",{
-        })
-        return response.data
-    } catch (err) {
-         console.log(err)
-    }
-}
 
-
-export async function getMe(){
-    try {
-        const response = await api.get("/api/auth/get-me",{
-            withCredentials: true 
+        const response = await api.post("/api/auth/login", {
+            email, password
         })
+
         return response.data
+
     } catch (err) {
         console.log(err)
-        return null   
+    }
+
+}
+
+export async function logout() {
+    try {
+
+        const response = await api.get("/api/auth/logout")
+
+        return response.data
+
+    } catch (err) {
+
     }
 }
 
+export async function getMe() {
 
+    try {
 
+        const response = await api.get("/api/auth/get-me")
 
+        return response.data
 
+    } catch (err) {
+        console.log(err)
+    }
 
+}
 
+export async function verifyOTP({ email, otp }) {
 
+    try {
+        const response = await api.post('/api/auth/verify-otp', {
+            email, otp
+        })
 
+        return response.data
 
+    } catch (err) {
+        console.log(err)
+    }
 
-
-
-
+}
 
 // export async function register({username,email,password}){
 //     try {

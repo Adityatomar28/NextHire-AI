@@ -1,0 +1,213 @@
+// ===========================
+// RIGHT PANEL ADDITIONAL STYLES
+// ===========================
+
+.score-ring {
+  animation: rotate 2s linear infinite;
+  
+  @keyframes rotate {
+    from {
+      transform: rotate(-90deg);
+    }
+    to {
+      transform: rotate(-90deg);
+    }
+  }
+}
+
+// SVG Gradient Definitions (to be added in component)
+.svg-gradients {
+  position: absolute;
+  width: 0;
+  height: 0;
+  
+  #scoreGradient {
+    stop:first-child {
+      stop-color: #ff006e;
+    }
+    stop:last-child {
+      stop-color: #ff6b35;
+    }
+  }
+}
+
+// ===========================
+// RESPONSIVE ADJUSTMENTS
+// ===========================
+
+@media (max-width: 1400px) {
+  .panel-section {
+    padding: 20px;
+  }
+
+  .score-container {
+    width: 160px;
+    height: 160px;
+  }
+
+  .score-content {
+    .score-percentage {
+      font-size: 40px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .right-panel {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .panel-section {
+    flex: 1;
+    min-width: auto;
+
+    &.match-score-section,
+    &.skill-gaps-section {
+      flex: 0 1 auto;
+    }
+  }
+
+  .score-container {
+    width: 140px;
+    height: 140px;
+
+    .score-content {
+      .score-percentage {
+        font-size: 36px;
+      }
+
+      .score-label {
+        font-size: 11px;
+      }
+    }
+  }
+
+  .skills-list {
+    gap: 12px;
+  }
+
+  .skill-card {
+    .skill-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+
+  .download-btn {
+    padding: 16px;
+    flex-direction: column;
+    text-align: center;
+
+    .btn-content {
+      text-align: center;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .score-container {
+    width: 120px;
+    height: 120px;
+
+    .score-content {
+      .score-percentage {
+        font-size: 32px;
+      }
+    }
+  }
+
+  .skill-card {
+    padding: 12px;
+
+    .skill-progress {
+      gap: 8px;
+    }
+  }
+
+  .stats-section {
+    gap: 12px;
+  }
+
+  .stat-item {
+    padding: 10px;
+  }
+}
+
+// ===========================
+// ANIMATIONS FOR SCORE RING
+// ===========================
+
+@keyframes drawStroke {
+  0% {
+    stroke-dasharray: 0 339.29;
+  }
+  100% {
+    stroke-dasharray: 339.29 339.29;
+  }
+}
+
+// ===========================
+// SKILL CARD HOVER EFFECTS
+// ===========================
+
+.skill-card {
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transition: left 0.5s ease;
+  }
+
+  &:hover::before {
+    left: 100%;
+  }
+}
+
+// ===========================
+// PERFORMANCE OPTIMIZATIONS
+// ===========================
+
+.score-ring,
+.score-ring-progress,
+.progress-fill,
+.chevron-btn {
+  will-change: auto;
+
+  &:hover {
+    will-change: transform;
+  }
+}
+
+// ===========================
+// DARK MODE VARIABLES
+// ===========================
+
+:root {
+  --color-primary: #ff006e;
+  --color-secondary: #ff6b35;
+  --color-accent: #b537f2;
+  --color-text-primary: #e0e7ff;
+  --color-text-secondary: #8892b0;
+  --color-bg-primary: #0a0e27;
+  --color-bg-secondary: #0f1638;
+  --color-bg-tertiary: #1a2651;
+  --color-border: rgba(255, 255, 255, 0.08);
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+  
+  --transition-fast: 0.15s ease-in-out;
+  --transition-base: 0.3s ease-in-out;
+  --transition-slow: 0.5s ease-in-out;
+}
