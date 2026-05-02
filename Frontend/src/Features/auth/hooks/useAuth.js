@@ -33,12 +33,12 @@ export const useAuth = () => {
             const data = await register({ username, email, password })
             if (data && data.user) {
                 setUser(data.user)
-                return true
+                return { success: true }
             }
-            return false
+            return { success: false, message: "Unknown error occurred" }
         } catch (err) {
             console.error('Register failed', err)
-            return false
+            return { success: false, message: err.response?.data?.message || "Could not create account. Please check your data and try again." }
         } finally {
             setLoading(false)
         }

@@ -1,48 +1,58 @@
-const pdfParse = require("pdf-parse")
-const { generateInterviewReport, generateResumePdf } = require("../services/ai.service")
-const interviewReportModel = require("../models/interviewReport.model")
-
-
-
+const pdfParse = require("pdf-parse/lib/pdf-parse.js");  // ✅ ONLY THIS
+const { generateInterviewReport, generateResumePdf } = require("../services/ai.service");
+const interviewReportModel = require("../models/interviewReport.model");
 
 /**
  * @description Controller to generate interview report based on user self description, resume and job description.
  */
+
 async function generateInterViewReportController(req, res) {
     try {
-        const resumeContent = req.file
-            ? await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText()
-            : { text: "" }
+        console.log("BODY:", req.body);
+        console.log("FILE:", req.file);
 
-        const { title, selfDescription, jobDescription } = req.body
+        const { jobDescription, selfDescription } = req.body;
 
-        const interViewReportByAi = await generateInterviewReport({
-            resume: resumeContent.text,
+        let resumeText = "";
+
+        if (req.file) {
+            const data = await pdfParse(req.file.buffer);  // ✅ use directly
+            resumeText = data.text;
+        }
+
+        if (!resumeText && !selfDescription) {
+            return res.status(400).json({
+                message: "Provide resume or self description"
+            });
+        }
+
+        const report = await generateInterviewReport({
+            jobDescription,
             selfDescription,
-            jobDescription
-        })
+            resumeText
+        });
 
-        const interviewReport = await interviewReportModel.create({
+        // Ensure title is present
+        if (!report.title) {
+            report.title = jobDescription.split('\n')[0].substring(0, 100) || "Interview Report";
+        }
+
+        // Save the report to database
+        const savedReport = await interviewReportModel.create({
             user: req.user.id,
-            title: title || "Software Engineer",
-            resume: resumeContent.text,
+            resume: resumeText,
             selfDescription,
             jobDescription,
-            ...interViewReportByAi
-        })
+            ...report
+        });
 
-        return res.status(201).json({
-            message: "Interview report generated successfully.",
-            interviewReport
-        })
+        res.json({
+            interviewReport: savedReport
+        });
 
     } catch (error) {
-        console.error("ERROR in generateInterViewReportController:", error)
-
-        return res.status(500).json({
-            message: "AI service is busy. Please try again.",
-            error: error.message
-        })
+        console.error("🔥 ERROR:", error);
+        res.status(500).json({ message: "Failed" });
     }
 }
 

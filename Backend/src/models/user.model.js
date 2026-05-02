@@ -18,6 +18,16 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true,
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    otp: {
+        type: String
+    },
+    otpExpires: {
+        type: Date
     }
 })
 //Here we are storing ki user k data kis collection[users] k andr store horha hoga ,and schema is userSchema

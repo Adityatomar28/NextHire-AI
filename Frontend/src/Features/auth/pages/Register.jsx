@@ -54,11 +54,11 @@ const Register = () => {
 
         if (!showOTP) {
             // Registration step
-            const success = await handleRegister({ username, email, password })
-            if (success) {
+            const result = await handleRegister({ username, email, password })
+            if (result.success) {
                 setShowOTP(true)
             } else {
-                setError('Could not create account. Please check your data and try again.')
+                setError(result.message)
             }
         } else {
             // OTP verification step
